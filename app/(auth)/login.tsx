@@ -6,14 +6,22 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const { login, socialLogin } = useAuth();
 
   const handleLogin = async () => {
     try {
       await login(email, password);
     } catch (error) {
-      Alert.alert('Error', 'Failed to login. Please check your credentials.');
       console.error('Login error:', error);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await socialLogin('google-oauth2');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to login with Google.');
+      console.error('Google login error:', error);
     }
   };
 
@@ -39,6 +47,17 @@ export default function LoginScreen() {
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>OR</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>
+      
+          <Text style={styles.socialButtonText}>Continue with Google</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -76,5 +95,47 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ccc',
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    color: '#666',
+  },
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+  },
+  googleIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#4285F4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  googleIcon: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  socialButtonText: {
+    fontSize: 16,
+    color: '#333',
   },
 }); 
