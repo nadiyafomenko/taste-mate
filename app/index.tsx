@@ -5,7 +5,6 @@ import { View, ActivityIndicator } from 'react-native';
 export default function Index() {
   const { isAuthenticated, isLoading } = useAuth();
 
-  console.log('isAuthenticated', isAuthenticated, isLoading);
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
