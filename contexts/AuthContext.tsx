@@ -18,6 +18,7 @@ interface IAuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<IAuthContextType | null>(null);
@@ -25,6 +26,7 @@ const AuthContext = createContext<IAuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<IAuth0User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const login = async (email: string, password: string) => {
     try {
@@ -41,7 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
       setUser({ name: profile.name as string, email: profile.email as string });
       await AsyncStorage.setItem('accessToken', res.accessToken);
+      setIsLoading(false);
     } catch (err: any) {  
+      setIsLoading(false);
       if (err.message?.includes('user does not exist')) {
         throw new Error('User not found');
       }
@@ -90,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, signup, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -100,6 +104,6 @@ export const useAuth = (): IAuthContextType => {
   const context = useContext(AuthContext);
 
   if (!context) throw new Error('useAuth must be used within AuthProvider');
-  
+
   return context;
 };

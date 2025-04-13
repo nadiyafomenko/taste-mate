@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, socialLogin } = useAuth();
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     try {
@@ -17,11 +17,8 @@ export default function LoginScreen() {
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      await socialLogin('google-oauth2');
-    } catch (error) {
+    try {} catch (error) {
       Alert.alert('Error', 'Failed to login with Google.');
-      console.error('Google login error:', error);
     }
   };
 
