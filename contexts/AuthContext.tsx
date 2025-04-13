@@ -36,8 +36,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         realm: 'Username-Password-Authentication',
         scope: 'openid profile email',
       });
-
-      console.log('res', res.accessToken);
   
       const profile = await auth0.auth.userInfo({ token: res.accessToken });
   
@@ -78,14 +76,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const restoreSession = async () => {
-    const token = await AsyncStorage.getItem('accessToken');
-    if (!token) return;
-
     try {
+      const token = await AsyncStorage.getItem('accessToken');
+      if (!token) return;
+  
       const profile = await auth0.auth.userInfo({ token });
       setUser({ name: profile.name as string, email: profile.email as string });
     } catch {
       await AsyncStorage.removeItem('accessToken');
+    } finally {
+      setIsLoading(false); 
     }
   };
 
