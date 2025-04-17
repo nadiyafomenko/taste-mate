@@ -3,7 +3,7 @@ import Auth0 from 'react-native-auth0';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
-const { AUTH0_DOMAIN, AUTH0_CLIENT_ID } = Constants.expoConfig?.extra || {};
+const { AUTH0_DOMAIN, AUTH0_CLIENT_ID, API_URL, AUTH0_CLIENT_AUDIENCE } = Constants.expoConfig?.extra || {};
 
 const auth0 = new Auth0({ domain: AUTH0_DOMAIN, clientId: AUTH0_CLIENT_ID });
 
@@ -33,10 +33,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await auth0.auth.passwordRealm({
         username: email,
         password,
+        audience: AUTH0_CLIENT_AUDIENCE,
         realm: 'Username-Password-Authentication',
         scope: 'openid profile email',
       });
-  
+
+      console.log('API_URL:',res.accessToken);
+
+      const resAuth = await fetch(`${API_URL}/api/user/me`, {
+        headers: {
+          Authorization: `Bearer ${res.accessToken}`,
+        },
+      });
+
+      if (!resAuth.ok) {
+        throw new Error('User not found');
+      }
+
       const profile = await auth0.auth.userInfo({ token: res.accessToken });
   
       setUser({ name: profile.name as string, email: profile.email as string });
@@ -44,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     } catch (err: any) {  
       setIsLoading(false);
+      console.log(err);
       if (err.message?.includes('user does not exist')) {
         throw new Error('User not found');
       }

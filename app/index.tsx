@@ -13,8 +13,6 @@ export default function Index() {
     );
   }
 
-
-  // Redirect to the appropriate screen based on authentication status
   if (isAuthenticated) {
     return <Redirect href="/(tabs)" />;
   } else {
