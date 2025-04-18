@@ -1,9 +1,10 @@
 import { Redirect } from 'expo-router';
-import { useAuth } from '../contexts/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
+import { useStores } from '@/contexts/RootStoreContext';
+import { observer } from 'mobx-react-lite';
 
-export default function Index() {
-  const { isAuthenticated, isLoading } = useAuth();
+const Index = observer(() => {
+  const { authStore: { isAuthenticated, isLoading } } = useStores();
 
   if (isLoading) {
     return (
@@ -13,9 +14,7 @@ export default function Index() {
     );
   }
 
-  if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
-  } else {
-    return <Redirect href="/(auth)/login" />;
-  }
-}
+  return <Redirect href={isAuthenticated ? "/(tabs)" : "/(auth)/login"} />;
+});
+
+export default Index;

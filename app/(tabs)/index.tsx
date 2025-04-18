@@ -1,22 +1,25 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Stack } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
-import { Text, Heading } from "@/components";
+import { observer } from 'mobx-react-lite';
+import { useStores } from '@/contexts/RootStoreContext';
+import { Text, Heading } from '@gluestack-ui/themed';
 
-export default function HomeScreen() {
-  const { user } = useAuth();
+const HomeScreen = observer(() => {
+  const { authStore: { user } } = useStores();
 
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
       <View style={styles.container}>
         <Heading size="2xl">Home</Heading>
-        {user && <Text>Welcome back, {user.name}!</Text> }
+        {user && <Text>Welcome back, {user.name}!</Text>}
       </View>
     </>
   );
-}
+});
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -25,4 +28,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-}); 
+});

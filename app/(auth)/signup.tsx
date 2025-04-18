@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '@/contexts/RootStoreContext';
@@ -17,19 +16,18 @@ import {
   Pressable,
   VStack,
   Center,
-  Icon
 } from '@gluestack-ui/themed';
 import { EyeIcon, EyeOffIcon } from '@gluestack-ui/themed';
 
-const LoginScreen = observer(() => {
+const SignupScreen = observer(() => {
   const { authStore } = useStores();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     try {
-      await authStore.login(email, password);
+      await authStore.signup(email, password);
       router.replace('/(tabs)');
     } catch (error) {
       // Error handled silently
@@ -42,11 +40,11 @@ const LoginScreen = observer(() => {
       <Center flex={1} px="$6">
         <VStack space="xl" w="$full" maxWidth="$96">
           <VStack space="xs">
-            <Text size="2xl" bold>Login to your account</Text>
+            <Text size="2xl" bold>Create an account</Text>
             <HStack space="xs">
-              <Text size="sm" color="$textLight400">Don't have an account?</Text>
-              <Pressable onPress={() => router.push('/(auth)/signup')}>
-                <Text size="sm" color="$primary600" fontWeight="$medium">Sign up</Text>
+              <Text size="sm" color="$textLight400">Already have an account?</Text>
+              <Pressable onPress={() => router.push('/(auth)/login')}>
+                <Text size="sm" color="$primary600" fontWeight="$medium">Login</Text>
               </Pressable>
             </HStack>
           </VStack>
@@ -80,18 +78,12 @@ const LoginScreen = observer(() => {
               </Input>
             </VStack>
 
-            <Box alignItems="flex-end">
-              <Pressable>
-                <Text size="sm" color="$primary600" fontWeight="$medium">Forgot Password?</Text>
-              </Pressable>
-            </Box>
-
             <Button
-              onPress={handleLogin}
+              onPress={handleSignup}
               isDisabled={authStore.isLoading}
               size="lg"
             >
-              <ButtonText>Login</ButtonText>
+              <ButtonText>Create Account</ButtonText>
             </Button>
 
             <VStack space="lg" mt="$2">
@@ -117,13 +109,4 @@ const LoginScreen = observer(() => {
   );
 });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '$backgroundLight0'
-  }
-});
-
-export default LoginScreen;
+export default SignupScreen; 

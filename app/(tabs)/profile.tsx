@@ -1,45 +1,78 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Stack, router } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
-import { Heading, Text, Button, ButtonText } from "@/components";
+import { observer } from 'mobx-react-lite';
+import { useStores } from '@/contexts/RootStoreContext';
+import { router } from 'expo-router';
+import {
+  Box,
+  VStack,
+  Text,
+  Button,
+  ButtonText,
+  Avatar,
+  AvatarFallbackText,
+  Divider,
+  HStack,
+} from '@gluestack-ui/themed';
 
-export default function ProfileScreen() {
-  const { user, logout } = useAuth();
+const ProfileScreen = observer(() => {
+  const { authStore } = useStores();
 
   const handleLogout = async () => {
     try {
-      await logout();
-      router.replace('/(auth)/login');
+      await authStore.logout();
+      router.replace('/login');
     } catch (error) {
-      console.error('Logout failed:', error);
+      // Error handled silently
     }
   };
 
   return (
-    <>
-      <Stack.Screen options={{ title: 'Profile' }} />
-      <View style={styles.container}>
-        <Heading >Profile</Heading>
-        {user && (
-          <>
-            <Text >Welcome, {user.name}</Text>
-            <Text>Email: {user.email}</Text>
-          </>
-        )}
-        <Button variant='link' onPress={handleLogout}>
-          <ButtonText>Logout</ButtonText>
-        </Button>
-      </View>
-    </>
-  );
-}
+    <Box flex={1} bg="$backgroundLight0" p="$4">
+      <VStack space="md" alignItems="center" mt="$4" flex={1}>
+        <Avatar size="2xl" bg="$primary500">
+          <AvatarFallbackText>
+            {authStore.user?.name || authStore.user?.email || 'User'}
+          </AvatarFallbackText>
+        </Avatar>
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-}); 
+        <VStack space="xs" alignItems="center" mb="$4">
+          <Text size="xl" bold>
+            {authStore.user?.name || 'User Name'}
+          </Text>
+          <Text size="sm" color="$textLight500">
+            {authStore.user?.email || 'email@example.com'}
+          </Text>
+        </VStack>
+
+        <Divider my="$2" />
+
+        <VStack space="md" w="$full">
+          <HStack justifyContent="space-between" alignItems="center">
+            <Text size="md">Account Settings</Text>
+          </HStack>
+
+          <HStack justifyContent="space-between" alignItems="center">
+            <Text size="md">Notifications</Text>
+          </HStack>
+
+          <HStack justifyContent="space-between" alignItems="center">
+            <Text size="md">Privacy</Text>
+          </HStack>
+        </VStack>
+
+        <Box flex={1} w="$full" justifyContent="flex-end" pb="$4">
+          <Button
+            size="lg"
+            variant="solid"
+            bg="$error600"
+            onPress={handleLogout}
+          >
+            <ButtonText>Logout</ButtonText>
+          </Button>
+        </Box>
+      </VStack>
+    </Box>
+  );
+});
+
+export default ProfileScreen;

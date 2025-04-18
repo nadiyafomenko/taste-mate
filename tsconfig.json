@@ -10,10 +10,19 @@
         "./*"
       ],
       "@contexts/*": [
-        "contexts/*"
+        "contexts/*", 
+      ],
+      "@components/*": [
+        "components/*",
+      ],
+      "@services/*": [
+        "services/*",
       ],
       "tailwind.config": [
         "./tailwind.config.js"
+      ],
+      "@assets/*": [
+        "assets/*"
       ]
     }
   },

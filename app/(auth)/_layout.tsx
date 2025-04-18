@@ -1,9 +1,9 @@
-import { Redirect } from 'expo-router';
-import { Stack } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
+import { Redirect, Stack } from 'expo-router';
+import { observer } from 'mobx-react-lite';
+import { useStores } from '@/contexts/RootStoreContext';
 
-export default function AuthLayout() {
-  const { isAuthenticated } = useAuth();
+const AuthLayout = observer(() => {
+  const { authStore: { isAuthenticated } } = useStores();
 
   if (isAuthenticated) {
     return <Redirect href="/(tabs)" />;
@@ -11,9 +11,9 @@ export default function AuthLayout() {
 
   return (
     <Stack>
-        <Stack.Screen
-          name="login"
-          options={{ title: 'Login',headerShown: false }}
+      <Stack.Screen
+        name="login"
+        options={{ title: 'Login', headerShown: false }}
       />
       <Stack.Screen
         name="index"
@@ -21,4 +21,6 @@ export default function AuthLayout() {
       />
     </Stack>
   );
-} 
+});
+
+export default AuthLayout;
