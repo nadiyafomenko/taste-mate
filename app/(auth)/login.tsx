@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Stack, router } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '@/contexts/RootStoreContext';
+import { SafeAreaView } from 'react-native';
 import {
   Input,
   InputField,
@@ -16,8 +17,9 @@ import {
   VStack,
   Center,
   Heading,
+  Icon,
 } from '@gluestack-ui/themed';
-import { EyeIcon, EyeOffIcon } from '@gluestack-ui/themed';
+import { EyeIcon, EyeOffIcon, ArrowLeftIcon } from '@gluestack-ui/themed';
 
 const LoginScreen = observer(() => {
   const { authStore } = useStores();
@@ -35,18 +37,24 @@ const LoginScreen = observer(() => {
   };
 
   return (
-    <Box flex={1} bg="$backgroundLight0">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <Stack.Screen options={{ headerShown: false }} />
-      <Center flex={1} px="$6">
+      <Pressable
+        onPress={() => router.back()}
+        p="$4"
+      >
+        <Icon as={ArrowLeftIcon} size="lg" color="$textLight900" />
+      </Pressable>
+      <Box flex={1} px="$6">
         <VStack space="xl" w="$full" maxWidth="$96">
-          <VStack space="xs" mb="$4">
-            <Heading size="2xl">Welcome Back</Heading>
+          <VStack space="xs" mb="$4" alignItems="flex-start">
+            <Heading size="2xl">Привіт знову! 👋</Heading>
             <Text size="lg" color="$textLight500">
-              Sign in to continue
+            Увійди та подивимось, що приготувати 🍴
             </Text>
           </VStack>
 
-          <VStack space="lg">
+          <VStack space="lg" w="$full">
             <VStack space="xs">
               <Text color="$textLight500" size="sm">Email</Text>
               <Input
@@ -55,7 +63,7 @@ const LoginScreen = observer(() => {
                 borderColor={email ? "$primary500" : "$borderLight200"}
               >
                 <InputField
-                  placeholder="Enter your email"
+                  placeholder="example@gmail.com"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -72,7 +80,7 @@ const LoginScreen = observer(() => {
                 borderColor={password ? "$primary500" : "$borderLight200"}
               >
                 <InputField
-                  placeholder="Enter your password"
+                  placeholder="********"
                   value={password}
                   onChangeText={setPassword}
                   type={showPassword ? "text" : "password"}
@@ -86,7 +94,7 @@ const LoginScreen = observer(() => {
             <Box alignItems="flex-end">
               <Pressable>
                 <Text size="sm" color="$primary500" fontWeight="$medium">
-                  Forgot Password?
+                  Забув пароль?
                 </Text>
               </Pressable>
             </Box>
@@ -98,25 +106,26 @@ const LoginScreen = observer(() => {
                 isDisabled={authStore.isLoading || !email || !password}
                 bg="$primary500"
                 borderRadius="$lg"
+                w="$full"
               >
-                <ButtonText>Sign In</ButtonText>
+                <ButtonText>Увійти</ButtonText>
               </Button>
 
               <HStack space="sm" justifyContent="center">
                 <Text size="sm" color="$textLight400">
-                  Don't have an account?
+                Новенький тут?
                 </Text>
                 <Pressable onPress={() => router.push('/(auth)/signup')}>
                   <Text size="sm" color="$primary500" fontWeight="$medium">
-                    Sign Up
+                  Зареєструйся 🍽️
                   </Text>
                 </Pressable>
               </HStack>
             </VStack>
           </VStack>
         </VStack>
-      </Center>
-    </Box>
+      </Box>
+    </SafeAreaView>
   );
 });
 

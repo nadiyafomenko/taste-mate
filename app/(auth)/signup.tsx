@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Stack, router } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '@/contexts/RootStoreContext';
+import { SafeAreaView } from 'react-native';
 import {
   Input,
   InputField,
@@ -16,8 +17,9 @@ import {
   VStack,
   Center,
   Heading,
+  Icon,
 } from '@gluestack-ui/themed';
-import { EyeIcon, EyeOffIcon } from '@gluestack-ui/themed';
+import { EyeIcon, EyeOffIcon, ArrowLeftIcon } from '@gluestack-ui/themed';
 
 const SignupScreen = observer(() => {
   const { authStore } = useStores();
@@ -35,18 +37,24 @@ const SignupScreen = observer(() => {
   };
 
   return (
-    <Box flex={1} bg="$backgroundLight0">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <Stack.Screen options={{ headerShown: false }} />
-      <Center flex={1} px="$6">
+      <Pressable
+        onPress={() => router.back()}
+        p="$4"
+      >
+        <Icon as={ArrowLeftIcon} size="lg" color="$textLight900" />
+      </Pressable>
+      <Box flex={1} px="$6">
         <VStack space="xl" w="$full" maxWidth="$96">
-          <VStack space="xs" mb="$4">
-            <Heading size="2xl">Create Account</Heading>
+          <VStack space="xs" mb="$4" alignItems="flex-start">
+            <Heading size="2xl">Почнемо!</Heading>
             <Text size="lg" color="$textLight500">
-              Join our community of food lovers
+            Бо ніхто не має страждати від голоду та нудної їжі 
             </Text>
           </VStack>
 
-          <VStack space="lg">
+          <VStack space="lg" w="$full">
             <VStack space="xs">
               <Text color="$textLight500" size="sm">Email</Text>
               <Input
@@ -55,7 +63,7 @@ const SignupScreen = observer(() => {
                 borderColor={email ? "$primary500" : "$borderLight200"}
               >
                 <InputField
-                  placeholder="Enter your email"
+                  placeholder="example@gmail.com"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -72,7 +80,7 @@ const SignupScreen = observer(() => {
                 borderColor={password ? "$primary500" : "$borderLight200"}
               >
                 <InputField
-                  placeholder="Create a password"
+                  placeholder="********"
                   value={password}
                   onChangeText={setPassword}
                   type={showPassword ? "text" : "password"}
@@ -90,25 +98,26 @@ const SignupScreen = observer(() => {
                 isDisabled={authStore.isLoading || !email || !password}
                 bg="$primary500"
                 borderRadius="$lg"
+                w="$full"
               >
-                <ButtonText>Create Account</ButtonText>
+                <ButtonText>Погнали! 🚀</ButtonText>
               </Button>
 
               <HStack space="sm" justifyContent="center">
                 <Text size="sm" color="$textLight400">
-                  Already have an account?
+                Вже маєш акаунт? 
                 </Text>
                 <Pressable onPress={() => router.push('/(auth)/login')}>
                   <Text size="sm" color="$primary500" fontWeight="$medium">
-                    Sign In
+                  Увійти
                   </Text>
                 </Pressable>
               </HStack>
             </VStack>
           </VStack>
         </VStack>
-      </Center>
-    </Box>
+      </Box>
+    </SafeAreaView>
   );
 });
 

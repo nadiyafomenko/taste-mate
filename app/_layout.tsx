@@ -1,6 +1,6 @@
 // app/_layout.tsx
 import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { config } from '@gluestack-ui/config';
+import { config } from '@/components/ui/gluestack-ui-provider/config';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
