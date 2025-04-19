@@ -12,7 +12,11 @@ import {
   AvatarFallbackText,
   Divider,
   HStack,
+  Pressable,
+  Icon,
+  Center,
 } from '@gluestack-ui/themed';
+import { ChevronRightIcon } from '@gluestack-ui/themed';
 
 const ProfileScreen = observer(() => {
   const { authStore } = useStores();
@@ -26,48 +30,62 @@ const ProfileScreen = observer(() => {
     }
   };
 
+  const menuItems = [
+    { title: 'Account Settings', onPress: () => {} },
+    { title: 'Notifications', onPress: () => {} },
+    { title: 'Privacy', onPress: () => {} },
+    { title: 'Help & Support', onPress: () => {} },
+  ];
+
   return (
-    <Box flex={1} bg="$backgroundLight0" p="$4">
-      <VStack space="md" alignItems="center" mt="$4" flex={1}>
+    <Box flex={1} bg="$backgroundLight0">
+      <Center px="$6" pt="$8" pb="$6">
         <Avatar size="2xl" bg="$primary500">
           <AvatarFallbackText>
             {authStore.user?.name || authStore.user?.email || 'User'}
           </AvatarFallbackText>
         </Avatar>
 
-        <VStack space="xs" alignItems="center" mb="$4">
-          <Text size="xl" bold>
+        <VStack space="xs" alignItems="center" mt="$4">
+          <Text size="xl" fontWeight="$bold">
             {authStore.user?.name || 'User Name'}
           </Text>
           <Text size="sm" color="$textLight500">
             {authStore.user?.email || 'email@example.com'}
           </Text>
         </VStack>
+      </Center>
 
-        <Divider my="$2" />
+      <VStack space="md" p="$6">
+        {menuItems.map((item, index) => (
+          <Pressable
+            key={item.title}
+            onPress={item.onPress}
+          >
+            <HStack
+              bg="$white"
+              p="$4"
+              borderRadius="$lg"
+              borderColor="$borderLight100"
+              borderWidth={1}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Text size="md" fontWeight="$medium">{item.title}</Text>
+              <Icon as={ChevronRightIcon} color="$textLight400" />
+            </HStack>
+          </Pressable>
+        ))}
 
-        <VStack space="md" w="$full">
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text size="md">Account Settings</Text>
-          </HStack>
-
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text size="md">Notifications</Text>
-          </HStack>
-
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text size="md">Privacy</Text>
-          </HStack>
-        </VStack>
-
-        <Box flex={1} w="$full" justifyContent="flex-end" pb="$4">
+        <Box pt="$4">
           <Button
             size="lg"
-            variant="solid"
-            bg="$error600"
+            variant="outline"
+            action="negative"
+            borderRadius="$lg"
             onPress={handleLogout}
           >
-            <ButtonText>Logout</ButtonText>
+            <ButtonText>Sign Out</ButtonText>
           </Button>
         </Box>
       </VStack>

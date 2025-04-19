@@ -1,12 +1,15 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import authService from '@services/auth.service';
+import { RootStore } from './RootStore';
 
 export class AuthStore {
   isLoading = true;
   isAuthenticated = false;
-  user: { name: string; email: string } | null = null;
+  user: { firstName: string; email: string } | null = null;
+  private rootStore: RootStore;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
     makeAutoObservable(this, {}, { autoBind: true });
     this.restoreSession();
   }
@@ -21,6 +24,11 @@ export class AuthStore {
       runInAction(() => {
         this.user = user;
         this.isAuthenticated = true;
+      });
+
+      await this.rootStore.userStore.setCurrentUser({
+        email: user.email,
+        firstName: user.firstName
       });
     } catch (err) {
       runInAction(() => {
@@ -38,8 +46,15 @@ export class AuthStore {
   async signup(email: string, password: string) {
     this.isLoading = true;
     try {
-      await authService.signup(email, password);
-      await this.login(email, password);
+      const token = await authService.signup(email, password);
+      const user = await authService.getProfile(token);
+      
+      runInAction(() => {
+        this.user = user;
+        this.isAuthenticated = true;
+      });
+      
+      await this.rootStore.userStore.createUser(email);
     } catch (err) {
       throw err;
     } finally {
@@ -55,12 +70,12 @@ export class AuthStore {
       this.user = null;
       this.isAuthenticated = false;
     });
+    this.rootStore.userStore.setCurrentUser(null);
   }
 
   async restoreSession() {
     try {
       const token = await authService.getStoredToken();
-  
       if (!token) throw new Error();
 
       const user = await authService.getProfile(token);

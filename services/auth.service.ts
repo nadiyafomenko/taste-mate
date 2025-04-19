@@ -2,13 +2,14 @@
 import Auth0 from 'react-native-auth0';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import api from './api';
 
-const { AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_AUDIENCE, API_URL } = Constants.expoConfig?.extra || {};
+const { AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_AUDIENCE } = Constants.expoConfig?.extra || {};
 
 const auth0 = new Auth0({ domain: AUTH0_DOMAIN, clientId: AUTH0_CLIENT_ID });
 
 export interface IUser {
-  name: string;
+  firstName: string;
   email: string;
 }
 
@@ -27,12 +28,24 @@ const login = async (email: string, password: string): Promise<string> => {
   return res.accessToken;
 };
 
-const signup = async (email: string, password: string): Promise<void> => {
+const signup = async (email: string, password: string): Promise<string> => {
   await auth0.auth.createUser({
     email,
     password,
     connection: 'Username-Password-Authentication',
   });
+
+  // Get token immediately after signup
+  const res = await auth0.auth.passwordRealm({
+    username: email,
+    password,
+    audience: AUTH0_CLIENT_AUDIENCE,
+    realm: 'Username-Password-Authentication',
+    scope: 'openid profile email',
+  });
+
+  await AsyncStorage.setItem(ACCESS_TOKEN_KEY, res.accessToken);
+  return res.accessToken;
 };
 
 const getStoredToken = async (): Promise<string | null> => {
@@ -45,7 +58,10 @@ const logout = async (): Promise<void> => {
 
 const getProfile = async (token: string): Promise<IUser> => {
   const profile = await auth0.auth.userInfo({ token });
-  return { name: profile.name as string, email: profile.email as string };
+  return { 
+    firstName: (profile.given_name || profile.name || profile.email?.split('@')[0]) as string,
+    email: profile.email as string
+  };
 };
 
 const authService = {

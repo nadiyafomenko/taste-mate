@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '@/contexts/RootStoreContext';
@@ -13,11 +12,10 @@ import {
   Text,
   Box,
   HStack,
-  Divider,
   Pressable,
   VStack,
   Center,
-  Icon
+  Heading,
 } from '@gluestack-ui/themed';
 import { EyeIcon, EyeOffIcon } from '@gluestack-ui/themed';
 
@@ -41,22 +39,23 @@ const LoginScreen = observer(() => {
       <Stack.Screen options={{ headerShown: false }} />
       <Center flex={1} px="$6">
         <VStack space="xl" w="$full" maxWidth="$96">
-          <VStack space="xs">
-            <Text size="2xl" bold>Login to your account</Text>
-            <HStack space="xs">
-              <Text size="sm" color="$textLight400">Don't have an account?</Text>
-              <Pressable onPress={() => router.push('/(auth)/signup')}>
-                <Text size="sm" color="$primary600" fontWeight="$medium">Sign up</Text>
-              </Pressable>
-            </HStack>
+          <VStack space="xs" mb="$4">
+            <Heading size="2xl">Welcome Back</Heading>
+            <Text size="lg" color="$textLight500">
+              Sign in to continue
+            </Text>
           </VStack>
 
           <VStack space="lg">
             <VStack space="xs">
-              <Text color="$textLight500">Email</Text>
-              <Input size="lg">
+              <Text color="$textLight500" size="sm">Email</Text>
+              <Input
+                size="lg"
+                borderRadius="$lg"
+                borderColor={email ? "$primary500" : "$borderLight200"}
+              >
                 <InputField
-                  placeholder="abc@gmail.com"
+                  placeholder="Enter your email"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -66,15 +65,19 @@ const LoginScreen = observer(() => {
             </VStack>
 
             <VStack space="xs">
-              <Text color="$textLight500">Password</Text>
-              <Input size="lg">
+              <Text color="$textLight500" size="sm">Password</Text>
+              <Input
+                size="lg"
+                borderRadius="$lg"
+                borderColor={password ? "$primary500" : "$borderLight200"}
+              >
                 <InputField
-                  placeholder="Enter password"
+                  placeholder="Enter your password"
                   value={password}
                   onChangeText={setPassword}
                   type={showPassword ? "text" : "password"}
                 />
-                <InputSlot pr="$4" pl="$3" onPress={() => setShowPassword(!showPassword)}>
+                <InputSlot pr="$4" onPress={() => setShowPassword(!showPassword)}>
                   <InputIcon as={showPassword ? EyeOffIcon : EyeIcon} color="$textLight400" />
                 </InputSlot>
               </Input>
@@ -82,48 +85,39 @@ const LoginScreen = observer(() => {
 
             <Box alignItems="flex-end">
               <Pressable>
-                <Text size="sm" color="$primary600" fontWeight="$medium">Forgot Password?</Text>
+                <Text size="sm" color="$primary500" fontWeight="$medium">
+                  Forgot Password?
+                </Text>
               </Pressable>
             </Box>
 
-            <Button
-              onPress={handleLogin}
-              isDisabled={authStore.isLoading}
-              size="lg"
-            >
-              <ButtonText>Login</ButtonText>
-            </Button>
-
-            <VStack space="lg" mt="$2">
-              <HStack alignItems="center" space="sm">
-                <Divider flex={1} />
-                <Text color="$textLight400" size="sm">OR</Text>
-                <Divider flex={1} />
-              </HStack>
-
+            <VStack space="md" mt="$4">
               <Button
-                variant="outline"
-                action="secondary"
-                onPress={() => {}}
                 size="lg"
+                onPress={handleLogin}
+                isDisabled={authStore.isLoading || !email || !password}
+                bg="$primary500"
+                borderRadius="$lg"
               >
-                <ButtonText>Continue with Google</ButtonText>
+                <ButtonText>Sign In</ButtonText>
               </Button>
+
+              <HStack space="sm" justifyContent="center">
+                <Text size="sm" color="$textLight400">
+                  Don't have an account?
+                </Text>
+                <Pressable onPress={() => router.push('/(auth)/signup')}>
+                  <Text size="sm" color="$primary500" fontWeight="$medium">
+                    Sign Up
+                  </Text>
+                </Pressable>
+              </HStack>
             </VStack>
           </VStack>
         </VStack>
       </Center>
     </Box>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '$backgroundLight0'
-  }
 });
 
 export default LoginScreen;

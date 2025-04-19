@@ -12,10 +12,10 @@ import {
   Text,
   Box,
   HStack,
-  Divider,
   Pressable,
   VStack,
   Center,
+  Heading,
 } from '@gluestack-ui/themed';
 import { EyeIcon, EyeOffIcon } from '@gluestack-ui/themed';
 
@@ -39,22 +39,23 @@ const SignupScreen = observer(() => {
       <Stack.Screen options={{ headerShown: false }} />
       <Center flex={1} px="$6">
         <VStack space="xl" w="$full" maxWidth="$96">
-          <VStack space="xs">
-            <Text size="2xl" bold>Create an account</Text>
-            <HStack space="xs">
-              <Text size="sm" color="$textLight400">Already have an account?</Text>
-              <Pressable onPress={() => router.push('/(auth)/login')}>
-                <Text size="sm" color="$primary600" fontWeight="$medium">Login</Text>
-              </Pressable>
-            </HStack>
+          <VStack space="xs" mb="$4">
+            <Heading size="2xl">Create Account</Heading>
+            <Text size="lg" color="$textLight500">
+              Join our community of food lovers
+            </Text>
           </VStack>
 
           <VStack space="lg">
             <VStack space="xs">
-              <Text color="$textLight500">Email</Text>
-              <Input size="lg">
+              <Text color="$textLight500" size="sm">Email</Text>
+              <Input
+                size="lg"
+                borderRadius="$lg"
+                borderColor={email ? "$primary500" : "$borderLight200"}
+              >
                 <InputField
-                  placeholder="abc@gmail.com"
+                  placeholder="Enter your email"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -64,43 +65,45 @@ const SignupScreen = observer(() => {
             </VStack>
 
             <VStack space="xs">
-              <Text color="$textLight500">Password</Text>
-              <Input size="lg">
+              <Text color="$textLight500" size="sm">Password</Text>
+              <Input
+                size="lg"
+                borderRadius="$lg"
+                borderColor={password ? "$primary500" : "$borderLight200"}
+              >
                 <InputField
-                  placeholder="Enter password"
+                  placeholder="Create a password"
                   value={password}
                   onChangeText={setPassword}
                   type={showPassword ? "text" : "password"}
                 />
-                <InputSlot pr="$4" pl="$3" onPress={() => setShowPassword(!showPassword)}>
+                <InputSlot pr="$4" onPress={() => setShowPassword(!showPassword)}>
                   <InputIcon as={showPassword ? EyeOffIcon : EyeIcon} color="$textLight400" />
                 </InputSlot>
               </Input>
             </VStack>
 
-            <Button
-              onPress={handleSignup}
-              isDisabled={authStore.isLoading}
-              size="lg"
-            >
-              <ButtonText>Create Account</ButtonText>
-            </Button>
-
-            <VStack space="lg" mt="$2">
-              <HStack alignItems="center" space="sm">
-                <Divider flex={1} />
-                <Text color="$textLight400" size="sm">OR</Text>
-                <Divider flex={1} />
-              </HStack>
-
+            <VStack space="md" mt="$4">
               <Button
-                variant="outline"
-                action="secondary"
-                onPress={() => {}}
                 size="lg"
+                onPress={handleSignup}
+                isDisabled={authStore.isLoading || !email || !password}
+                bg="$primary500"
+                borderRadius="$lg"
               >
-                <ButtonText>Continue with Google</ButtonText>
+                <ButtonText>Create Account</ButtonText>
               </Button>
+
+              <HStack space="sm" justifyContent="center">
+                <Text size="sm" color="$textLight400">
+                  Already have an account?
+                </Text>
+                <Pressable onPress={() => router.push('/(auth)/login')}>
+                  <Text size="sm" color="$primary500" fontWeight="$medium">
+                    Sign In
+                  </Text>
+                </Pressable>
+              </HStack>
             </VStack>
           </VStack>
         </VStack>
