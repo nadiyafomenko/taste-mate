@@ -6,14 +6,14 @@ import { useStores } from '@/contexts/RootStoreContext';
 import { Text, Heading } from '@gluestack-ui/themed';
 
 const HomeScreen = observer(() => {
-  const { authStore: { user } } = useStores();
+  const { userStore: { currentUser } } = useStores();
 
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
       <View style={styles.container}>
         <Heading size="2xl">Home</Heading>
-        {user && <Text>Welcome back, {user.name}!</Text>}
+        {currentUser && <Text>Welcome back, {currentUser.firstName}!</Text>}
       </View>
     </>
   );

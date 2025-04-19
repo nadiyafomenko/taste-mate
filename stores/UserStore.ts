@@ -71,7 +71,7 @@ export class UserStore {
     this.error = null;
 
     try {
-      const { data: newUser } = await api.post('/users', { email });
+      const { data: newUser } = await api.post('/user', { email });
       runInAction(() => {
         this.currentUser = newUser;
         this.isLoading = false;

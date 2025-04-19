@@ -47,14 +47,16 @@ export class AuthStore {
     this.isLoading = true;
     try {
       const token = await authService.signup(email, password);
+      await this.rootStore.userStore.createUser(email);
+
       const user = await authService.getProfile(token);
       
       runInAction(() => {
         this.user = user;
         this.isAuthenticated = true;
       });
-      
-      await this.rootStore.userStore.createUser(email);
+
+     
     } catch (err) {
       throw err;
     } finally {

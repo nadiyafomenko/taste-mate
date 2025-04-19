@@ -19,7 +19,7 @@ import {
 import { ChevronRightIcon } from '@gluestack-ui/themed';
 
 const ProfileScreen = observer(() => {
-  const { authStore } = useStores();
+  const { authStore, userStore } = useStores();
 
   const handleLogout = async () => {
     try {
@@ -42,16 +42,16 @@ const ProfileScreen = observer(() => {
       <Center px="$6" pt="$8" pb="$6">
         <Avatar size="2xl" bg="$primary500">
           <AvatarFallbackText>
-            {authStore.user?.name || authStore.user?.email || 'User'}
+            {userStore.currentUser?.firstName || 'User'}
           </AvatarFallbackText>
         </Avatar>
 
         <VStack space="xs" alignItems="center" mt="$4">
           <Text size="xl" fontWeight="$bold">
-            {authStore.user?.name || 'User Name'}
+            {userStore.currentUser?.firstName || 'User Name'}
           </Text>
           <Text size="sm" color="$textLight500">
-            {authStore.user?.email || 'email@example.com'}
+            {userStore.currentUser?.email || 'email@example.com'}
           </Text>
         </VStack>
       </Center>
